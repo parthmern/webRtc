@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSocket } from '../providers/Socket';
 
 const HomePage = () => {
@@ -7,7 +7,7 @@ const HomePage = () => {
 
   const [formData, setFormData] = useState({
     emailId: '',
-    roomCode: ''
+    roomId: ''
   });
 
 
@@ -26,8 +26,30 @@ const HomePage = () => {
 
     socket.emit("join-room", formData);
     
-
   };
+
+
+  // when user joined a room then what
+
+  const handleRoomJoined = ( roomId ) =>{
+    console.log("joined room's id =>",roomId);
+  }
+
+  useEffect(()=>{
+    socket.on("joined-room", (data)=>{
+      console.log(data);
+    });
+
+    socket.on("user-joined", (data)=>{
+      console.log(data);
+    });
+
+    socket.on("first", (data)=>{
+      console.log(data);
+    });
+
+  }, [socket]);
+
 
   return (
     <div>
@@ -45,9 +67,9 @@ const HomePage = () => {
         <input
           className='border-[2px]'
           type='text'
-          name='roomCode'
+          name='roomId'
           placeholder='enter room code'
-          value={formData.roomCode}
+          value={formData.roomId}
           onChange={handleChange}
         />
         <button type='submit'>Enter in room</button>

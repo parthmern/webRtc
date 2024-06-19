@@ -1,10 +1,16 @@
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
+import HomePage from "./pages/HomePage";
 
 function App() {
   return (
-    <main className="flex justify-center gap-4 flex-col min-h-screen">
-      intiate project
-    </main>
+    <div className="app">
+
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+      </Routes>
+
+    </div>
   );
 }
 

@@ -18,7 +18,7 @@ const emailToSocketMapping = new Map();
 // ================================
 // sockets related queries
 io.on(("connection"), (socket)=>{
-    console.log("connection established done with socket io server =>", socket);
+    console.log("connection established done from client side with socket io server =>", socket.id);
 
     // event "join-room"
     socket.on("join-room", (data)=>{
@@ -38,6 +38,7 @@ io.on(("connection"), (socket)=>{
 // http server listen
 app.listen(8000, ()=>{
     console.log("http server running on 8000 port");
+    console.log("===========================================================");
 })
 
 // socket io server listen

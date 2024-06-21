@@ -1,4 +1,5 @@
-// appContext 💙 Context API
+// appContext 💙 Context API 
+// for webSocket
 // from here u can use socket in all apps anywhere
 
 import React, { useMemo } from 'react';

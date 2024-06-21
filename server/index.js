@@ -17,7 +17,7 @@ const emailToSocketMapping = new Map();
 
 // ================================
 // sockets related queries
-io.on(("connection"), (socket)=>{
+io.on(("connection"),  (socket)=>{
     console.log("connection established done from client side with socket io server =>", socket.id);
 
     // if(socket.id){
@@ -25,7 +25,7 @@ io.on(("connection"), (socket)=>{
     // }
 
     // event "join-room"
-    socket.on("join-room", (data)=>{
+    socket.on("join-room", async (data)=>{
 
         const {roomId, emailId} = data ;
         console.log("join-room by USER data =>", {roomId, emailId}) ;
@@ -37,9 +37,18 @@ io.on(("connection"), (socket)=>{
 
         // in end send res to user
         socket.emit("joined-room", {roomId});
+
+        getAllUsersInRoom(roomId);
+
     })
 
 })
+
+async function getAllUsersInRoom(roomId){
+    const sockets = await io.in(roomId).fetchSockets();
+        const socketIds = sockets.map(socket => socket.id);
+        console.log(`all users's socket id in room named ${roomId}`, socketIds);
+}
 
 // =================================
 

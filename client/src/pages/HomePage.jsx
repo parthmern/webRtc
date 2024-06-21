@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useSocket } from '../providers/Socket';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
 
+  const navigate = useNavigate();
   const { socket } = useSocket();
 
   const [formData, setFormData] = useState({
@@ -31,22 +33,21 @@ const HomePage = () => {
 
   // when user joined a room then what
 
-  const handleRoomJoined = ( roomId ) =>{
+  const handleRoomJoined = ( {roomId} ) =>{
     console.log("joined room's id =>",roomId);
+    navigate(`/room/${roomId}`);
   }
 
   useEffect(()=>{
-    socket.on("joined-room", (data)=>{
-      console.log(data);
-    });
+    socket.on("joined-room", handleRoomJoined);
 
     socket.on("user-joined", (data)=>{
       console.log(data);
     });
 
-    socket.on("first", (data)=>{
-      console.log(data);
-    });
+    
+
+    
 
   }, [socket]);
 

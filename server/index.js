@@ -14,6 +14,7 @@ app.use(bodyParser.json());
 
 // db
 const emailToSocketMapping = new Map();
+const socketToEmailMapping = new Map();
 
 // ================================
 // sockets related queries
@@ -30,6 +31,8 @@ io.on(("connection"),  (socket)=>{
         const {roomId, emailId} = data ;
         console.log("join-room by USER data =>", {roomId, emailId}) ;
         emailToSocketMapping.set(emailId, socket.id);
+        socketToEmailMapping.set(socket.id, emailId); 
+
         // creating a group for that socket
         socket.join(roomId);
 
@@ -40,6 +43,21 @@ io.on(("connection"),  (socket)=>{
 
         getAllUsersInRoom(roomId);
 
+    })
+
+    //event "call-user"
+    socket.on("call-user", (data)=>{
+        const {emailId, offer} = data ;
+        const fromEmail = socketToEmailMapping.get(socket.id)
+        const socketID = emailToSocketMapping.get(emailId); 
+        socket.to(socketID).emit("incoming-call", {from : fromEmail, offer} );
+    })
+
+    //event "call-accepted"
+    socket.on("call-accepted", (data)=>{
+        const {emailId, ans} = data ;
+        const socketId = emailToSocketMapping.get(emailId);
+        socket.to(socketId).emit("call-accepted", {ans});
     })
 
 })

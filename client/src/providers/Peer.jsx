@@ -1,6 +1,6 @@
 // context api for webRtc
 
-import React, {useMemo } from "react";
+import React, {useCallback, useEffect, useMemo, useState } from "react";
 
 const PeerContext = React.createContext(null);
 
@@ -9,6 +9,8 @@ export const usePeer = () => {
 }
 
 export const PeerProvider = (props) => {
+
+    const [remoteStream, setRemoteStream] = useState(null);
 
     // RTCPeerConnection
     const peer = useMemo(()=>{
@@ -35,11 +37,34 @@ export const PeerProvider = (props) => {
     // set remote ans
     const setRemoteAns = async (ans) => {
         await peer.setRemoteDescription(ans);
-
     }
 
+    // send stream
+    const sendStream = async (stream) =>{
+        const tracks = stream.getTracks();
+        
+        for(const track of tracks){
+            peer.addTrack(track, stream);
+        }
+    }
+
+    const handleTrackEvent = useCallback( (ev)=>{
+        const streams = ev.streams;
+        setRemoteStream(streams[0]);
+    }, []);
+
+    
+
+    useEffect(()=>{
+        peer.addEventListener("track", handleTrackEvent);
+        // peer.addEventListener("negotiationneeded", handleNegotiation);
+        return ()=>{
+            peer.removeEventListener("track", handleTrackEvent);
+        }
+    }, [handleTrackEvent, peer])
+
     return(
-        <PeerContext.Provider value={{peer, createOffer, createAnswer, setRemoteAns}}>
+        <PeerContext.Provider value={{peer, createOffer, createAnswer, setRemoteAns, sendStream, remoteStream}}>
             {props.children}
         </PeerContext.Provider>
     )

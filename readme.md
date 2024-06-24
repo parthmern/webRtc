@@ -23,3 +23,5 @@ After creating a peer connection, you should exchange SDP (Session Description P
 
 
 ```
+
+![image](https://github.com/parthmern/webRtc/assets/125397720/d297c659-8ac4-41da-9b25-c6de895639de)
